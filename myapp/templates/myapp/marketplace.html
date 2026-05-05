@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div style="background: #e0f2f1; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+    <h2 style="color: #00796b; margin: 0;">Impact Dashboard</h2>
+    <p style="font-size: 1.2em;">Total Savings provided to the community: <strong>{{ total_saved }} BDT</strong></p>
+</div>
+    <h1>Available Medicines (70% Discount)</h1>
+    {% for med in meds %}
+        <div class="card">
+            <h3>{{ med.name }}</h3>
+            <p>Price: <s>{{ med.original_price }} BDT</s> <span class="discount">{{ med.resale_price }} BDT</span></p>
+        </div>
+    {% empty %}
+        <p>No verified medicines available yet. Check the Pharmacist Dashboard to verify some!</p>
+    {% endfor %}
+{% endblock %}

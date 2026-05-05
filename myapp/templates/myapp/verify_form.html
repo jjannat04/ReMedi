@@ -1,0 +1,37 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: auto;">
+    <h2>Triple-Check Audit: {{ med.name }}</h2>
+    <hr>
+    <p><strong>Batch:</strong> {{ med.batch_number }}</p>
+    <p><strong>Expiry:</strong> {{ med.expiry_date }}</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; cursor: pointer;">
+                <input type="checkbox" name="intact"> 1. Physical Integrity (Seal/Blister Intact)
+            </label>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; cursor: pointer;">
+                <input type="checkbox" name="authentic"> 2. Authenticity (Batch Verification)
+            </label>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; cursor: pointer;">
+                <input type="checkbox" name="expiry"> 3. Expiry Validation (Visual Sync)
+            </label>
+        </div>
+        
+        <p><small>* All three must be checked to list this medicine in the marketplace.</small></p>
+        
+        <button type="submit" class="btn" style="width: 100%; border: none; cursor: pointer;">
+            Complete Audit & List Medicine
+        </button>
+        <br><br>
+        <a href="{% url 'verification_queue' %}" style="display: block; text-align: center;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

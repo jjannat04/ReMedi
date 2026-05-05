@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+    <h1>Pharmacist Verification Queue</h1>
+    <p>The following medicines require a Triple-Check Audit before being listed.</p>
+
+    {% for med in meds %}
+        <div class="card">
+            <h3>{{ med.name }}</h3>
+            <p><strong>Batch:</strong> {{ med.batch_number }} | <strong>Expiry:</strong> {{ med.expiry_date }}</p>
+            <p><strong>Donor:</strong> {{ med.donor.username }}</p>
+            <a href="{% url 'verify_medicine' med.id %}" class="btn">Start Triple-Check Audit</a>
+        </div>
+    {% empty %}
+        <p>No pending medicines in the queue. Great job!</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ReMedi | Circular Healthcare</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; line-height: 1.6; }
+        nav { background: #00796b; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        nav a { color: white; margin-right: 20px; text-decoration: none; font-weight: bold; }
+        .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 2px 2px 5px #f0f0f0; }
+        .discount { color: #d32f2f; font-weight: bold; }
+        .btn { background: #00796b; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'marketplace' %}">Marketplace</a>
+        <a href="{% url 'verification_queue' %}">Pharmacist Dashboard</a>
+    </nav>
+    
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
