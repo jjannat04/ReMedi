@@ -6,6 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User
 from .forms import DonationForm
 
+from django.utils import timezone
+
 # A simple custom form to include the 'role' field
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -32,19 +34,29 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'myapp/signup.html', {'form': form})
 
+
 def marketplace(request):
-    verified_meds = Medicine.objects.filter(status='verified')
+    # Simplified Filter: Show everything that is verified and not yet sold
+    medicines = Medicine.objects.filter(status='verified').filter(patient=None)
     
-    # Calculate total savings for the "Impact Dashboard"
-    total_original = verified_meds.aggregate(Sum('original_price'))['original_price__sum'] or 0
-    total_resale = verified_meds.aggregate(Sum('resale_price'))['resale_price__sum'] or 0
-    total_saved = int(total_original - total_resale)
+    # Debugging: Print to your terminal to see if Django finds anything
+    print(f"DEBUG: Found {medicines.count()} verified medicines.")
+
+    # Calculate Total Savings
+    # We use .aggregate for better performance (Competitive Programmer style!)
+    sold_meds = Medicine.objects.filter(status='sold')
+    savings_data = sold_meds.aggregate(
+        total_orig=Sum('original_price'), 
+        total_resale=Sum('resale_price')
+    )
     
-    context = {
-        'meds': verified_meds,
-        'total_saved': total_saved,
-    }
-    return render(request, 'myapp/marketplace.html', context)
+    # Handle case where no meds are sold yet to avoid None errors
+    total_saved = (savings_data['total_orig'] or 0) - (savings_data['total_resale'] or 0)
+
+    return render(request, 'myapp/marketplace.html', {
+        'medicines': medicines,
+        'total_saved': total_saved
+    })
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
@@ -93,3 +105,19 @@ def profile_view(request):
     # Fetch donations made by the current user
     my_donations = Medicine.objects.filter(donor=request.user).order_by('-id')
     return render(request, 'myapp/profile.html', {'donations': my_donations})
+
+
+
+@login_required
+def order_medicine(request, med_id):
+    medicine = Medicine.objects.get(id=med_id)
+    
+    # Logic: Only 'verified' meds can be ordered, and only if not already sold
+    if medicine.status == 'verified' and medicine.patient is None:
+        medicine.patient = request.user
+        medicine.status = 'sold' # Or 'reserved'
+        medicine.ordered_at = timezone.now()
+        medicine.save()
+        return render(request, 'myapp/success.html', {'medicine': medicine})
+    
+    return redirect('marketplace')
