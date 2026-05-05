@@ -67,19 +67,42 @@ def verification_queue(request):
     
     pending_meds = Medicine.objects.filter(status='pending')
     return render(request, 'myapp/queue.html', {'meds': pending_meds})
+@login_required
+def pharmacist_queue(request):
+    """The Dashboard/List view"""
+    if request.user.role != 'PHARMACIST':
+        return redirect('marketplace')
+        
+    pending_medicines = Medicine.objects.filter(status='pending') # or whatever your default status is
+    pending_count = pending_medicines.count()
+    
+    return render(request, 'myapp/verify_form.html', {
+        'pending_medicines': pending_medicines,
+        'pending_count': pending_count
+    })
 
-
-# 3. Perform Audit: The actual verification action
+@login_required
 def verify_medicine(request, med_id):
-    medicine = get_object_or_404(Medicine, id=med_id)
-    if request.method == 'POST':
-        medicine.is_physical_intact = 'intact' in request.POST
-        medicine.is_authentic = 'authentic' in request.POST
-        medicine.is_expiry_valid = 'expiry' in request.POST
-        medicine.save()
-        return redirect('verification_queue')
-    return render(request, 'myapp/verify_form.html', {'med': medicine})
+    # 1. Security Check
+    if request.user.role != 'PHARMACIST':
+        return redirect('marketplace')
 
+    # 2. Get the medicine
+    medicine = get_object_or_404(Medicine, id=med_id)
+
+    # 3. Handle the logic
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'verify':
+            medicine.status = 'verified'
+        elif action == 'reject':
+            medicine.status = 'rejected'
+        
+        medicine.save()
+    
+    # 4. Redirect back to the queue (the page you were just on)
+    return redirect('pharmacist_queue')
 def corner_map(request):
     corners = ReMediCorner.objects.all()
     return render(request, 'myapp/map.html', {'corners': corners})
@@ -123,6 +146,6 @@ def order_medicine(request, med_id):
         medicine.status = 'sold'  # Force the status change here
         medicine.ordered_at = timezone.now()
         medicine.save()
-        return render(request, 'myapp/success.html', {'medicine': medicine})
+        return render(request, 'myapp/profile.html', {'medicine': medicine})
     
     return redirect('marketplace')

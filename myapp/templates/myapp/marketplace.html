@@ -1,33 +1,47 @@
 {% extends 'myapp/base.html' %}
 
 {% block content %}
-<div style="background: #e0f2f1; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-    <h2 style="color: #00796b; margin: 0;">Impact Dashboard</h2>
-    <p style="font-size: 1.2em;">Total Savings provided to the community: <strong>{{ total_saved }} BDT</strong></p>
+<div class="bg-emerald-700 text-white py-12 px-4 rounded-3xl mb-12 shadow-lg">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl font-extrabold mb-4">Circular Healthcare for All</h1>
+        <p class="text-emerald-100 mb-8">Redistributing unexpired medicine to those who need it most.</p>
+        <div class="inline-flex flex-col items-center">
+            <span class="text-5xl font-black mb-1">{{ total_saved }} BDT</span>
+            <span class="text-sm uppercase tracking-widest text-emerald-200">Total Community Savings</span>
+        </div>
+    </div>
 </div>
-    <h1>Available Medicines (70% Discount)</h1>
-    {% for med in medicines %}
-    <div class="card">
-        <h3>{{ med.name }}</h3>
-        <p>Original Price: {{ med.original_price }} BDT</p>
-        <p class="discount">ReMedi Price: {{ med.resale_price }} BDT (70% Off)</p>
-        <p>Expiry: {{ med.expiry_date }}</p>
-        
-        {% if user.is_authenticated %}
-            {% if med.status == 'verified' %}
-                <a href="{% url 'order_medicine' med.id %}" class="btn" style="background-color: #2e7d32;">Order Now</a>
-            {% else %}
-                <button class="btn" disabled style="background-color: #9e9e9e;">Unavailable</button>
-            {% endif %}
-        {% else %}
-            <a href="{% url 'login' %}" class="btn">Login to Order</a>
-        {% endif %}
+    <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for med in medicines %}
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow">
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-slate-800">{{ med.name }}</h3>
+                    <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full uppercase">
+                        Verified
+                    </span>
+                </div>
+                
+                <div class="space-y-2 mb-6 text-sm text-slate-600">
+                    <p class="flex justify-between">
+                        <span>Original Price:</span>
+                        <span class="line-through text-slate-400">{{ med.original_price }} BDT</span>
+                    </p>
+                    <p class="flex justify-between font-bold text-lg text-emerald-600">
+                        <span>ReMedi Price:</span>
+                        <span>{{ med.resale_price }} BDT</span>
+                    </p>
+                    <p class="text-xs">Expires: {{ med.expiry_date }}</p>
+                </div>
+
+                <a href="{% url 'order_medicine' med.id %}" 
+                   class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition-colors">
+                    Order Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% empty %}
-    <div style="text-align: center; padding: 50px;">
-        <h3>No medicines available right now.</h3>
-        <p>Check back later or <a href="{% url 'donate_medicine' %}">donate some!</a></p>
-        <p style="color: gray; font-size: 0.8em;">(Verified meds in Admin: {{ medicines.count }})</p>
-    </div>
-{% endfor %}
+</div>
 {% endblock %}
