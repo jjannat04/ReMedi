@@ -42,3 +42,13 @@ class Medicine(models.Model):
         if self.is_physical_intact and self.is_authentic and self.is_expiry_valid:
             self.status = 'verified'
         super().save(*args, **kwargs)
+
+class ReMediCorner(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    city = models.CharField(max_length=100, default="Feni") # Useful for filtering
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __cl__str__(self):
+        return f"{self.name} ({self.city})"        

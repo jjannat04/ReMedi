@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Medicine
+from .models import Medicine, ReMediCorner
 from django.db.models import Sum
 
 
@@ -68,3 +68,7 @@ def verify_medicine(request, med_id):
         medicine.save()
         return redirect('verification_queue')
     return render(request, 'myapp/verify_form.html', {'med': medicine})
+
+def corner_map(request):
+    corners = ReMediCorner.objects.all()
+    return render(request, 'myapp/map.html', {'corners': corners})
