@@ -1,0 +1,30 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<h2>Find a ReMedi Corner</h2>
+<p>Locate the nearest verified pharmacy to donate or collect medicine.</p>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div id="map" style="height: 500px; width: 100%; border-radius: 8px;"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Initialize the map (Centered near Feni/Dhaka area)
+    var map = L.map('map').setView([23.0159, 91.3976], 13); 
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add markers for each corner from our database
+    {% for corner in corners %}
+        L.marker([{{ corner.latitude }}, {{ corner.longitude }}])
+            .addTo(map)
+            .bindPopup("<b>{{ corner.name }}</b><br>{{ corner.address }}");
+    {% endfor %}
+</script>
+{% endblock %}
