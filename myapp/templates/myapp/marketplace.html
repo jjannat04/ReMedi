@@ -6,12 +6,28 @@
     <p style="font-size: 1.2em;">Total Savings provided to the community: <strong>{{ total_saved }} BDT</strong></p>
 </div>
     <h1>Available Medicines (70% Discount)</h1>
-    {% for med in meds %}
-        <div class="card">
-            <h3>{{ med.name }}</h3>
-            <p>Price: <s>{{ med.original_price }} BDT</s> <span class="discount">{{ med.resale_price }} BDT</span></p>
-        </div>
+    {% for med in medicines %}
+    <div class="card">
+        <h3>{{ med.name }}</h3>
+        <p>Original Price: {{ med.original_price }} BDT</p>
+        <p class="discount">ReMedi Price: {{ med.resale_price }} BDT (70% Off)</p>
+        <p>Expiry: {{ med.expiry_date }}</p>
+        
+        {% if user.is_authenticated %}
+            {% if med.status == 'verified' %}
+                <a href="{% url 'order_medicine' med.id %}" class="btn" style="background-color: #2e7d32;">Order Now</a>
+            {% else %}
+                <button class="btn" disabled style="background-color: #9e9e9e;">Unavailable</button>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn">Login to Order</a>
+        {% endif %}
+    </div>
     {% empty %}
-        <p>No verified medicines available yet. Check the Pharmacist Dashboard to verify some!</p>
-    {% endfor %}
+    <div style="text-align: center; padding: 50px;">
+        <h3>No medicines available right now.</h3>
+        <p>Check back later or <a href="{% url 'donate_medicine' %}">donate some!</a></p>
+        <p style="color: gray; font-size: 0.8em;">(Verified meds in Admin: {{ medicines.count }})</p>
+    </div>
+{% endfor %}
 {% endblock %}

@@ -15,4 +15,5 @@ urlpatterns = [
     path('map/', views.corner_map, name='corner_map'),
     path('donate/', views.donate_medicine, name='donate_medicine'),
     path('profile/', views.profile_view, name='profile'),
+    path('order/<int:med_id>/', views.order_medicine, name='order_medicine'),
 ]

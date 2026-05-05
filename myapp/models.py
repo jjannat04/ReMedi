@@ -20,6 +20,7 @@ class Medicine(models.Model):
         ('pending', 'Pending Review'),
         ('verified', 'Verified & Available'),
         ('rejected', 'Rejected'),
+        ('sold', 'Sold'),
     ]
 
     # Change User to 'myapp.User' to point to your custom model
@@ -36,6 +37,8 @@ class Medicine(models.Model):
     
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     qr_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    patient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='purchases')
+    ordered_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.resale_price = float(self.original_price) * 0.30
