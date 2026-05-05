@@ -1,0 +1,13 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: auto;">
+    <h2>Donate Unexpired Medicine</h2>
+    <p>Your contribution helps provide affordable healthcare to the community in Feni and beyond.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; border: none;">Submit Donation</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<h2>My ReMedi Dashboard</h2>
+<div class="card">
+    <h3>Your Impact</h3>
+    <p>You have donated <strong>{{ donations.count }}</strong> medicines!</p>
+</div>
+
+<h3>Donation History</h3>
+{% for med in donations %}
+    <div class="card">
+        <strong>{{ med.name }}</strong> - Status: 
+        <span style="color: {% if med.status == 'verified' %}green{% else %}orange{% endif %};">
+            {{ med.status|title }}
+        </span>
+        <br>
+        <small>Submitted on: {{ med.expiry_date }}</small>
+    </div>
+{% empty %}
+    <p>No donations yet. <a href="{% url 'donate_medicine' %}">Start here!</a></p>
+{% endfor %}
+{% endblock %}

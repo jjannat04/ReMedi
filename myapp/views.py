@@ -1,11 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Medicine, ReMediCorner
 from django.db.models import Sum
-
-
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .models import User
+from .forms import DonationForm
 
 # A simple custom form to include the 'role' field
 class SignUpForm(UserCreationForm):
@@ -72,3 +71,25 @@ def verify_medicine(request, med_id):
 def corner_map(request):
     corners = ReMediCorner.objects.all()
     return render(request, 'myapp/map.html', {'corners': corners})
+
+
+
+@login_required
+def donate_medicine(request):
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            medicine = form.save(commit=False)
+            medicine.donor = request.user  # Link the medicine to the logged-in user
+            medicine.status = 'pending'    # Ensure it starts as pending
+            medicine.save()
+            return redirect('marketplace')
+    else:
+        form = DonationForm()
+    return render(request, 'myapp/donate.html', {'form': form})
+
+@login_required
+def profile_view(request):
+    # Fetch donations made by the current user
+    my_donations = Medicine.objects.filter(donor=request.user).order_by('-id')
+    return render(request, 'myapp/profile.html', {'donations': my_donations})
