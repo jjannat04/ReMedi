@@ -1,23 +1,39 @@
 {% extends 'myapp/base.html' %}
 
 {% block content %}
-<h2>My ReMedi Dashboard</h2>
 <div class="card">
-    <h3>Your Impact</h3>
-    <p>You have donated <strong>{{ donations.count }}</strong> medicines!</p>
+    <h2>User Profile: {{ user.username }}</h2>
+    <p>Role: {{ user.role }}</p>
 </div>
 
-<h3>Donation History</h3>
-{% for med in donations %}
-    <div class="card">
-        <strong>{{ med.name }}</strong> - Status: 
-        <span style="color: {% if med.status == 'verified' %}green{% else %}orange{% endif %};">
-            {{ med.status|title }}
-        </span>
-        <br>
-        <small>Submitted on: {{ med.expiry_date }}</small>
-    </div>
-{% empty %}
-    <p>No donations yet. <a href="{% url 'donate_medicine' %}">Start here!</a></p>
-{% endfor %}
+<hr>
+
+<h3>My Orders (Medicines to Collect)</h3>
+<div class="order-section">
+    {% for order in orders %}
+        <div class="card" style="border-left: 5px solid #00796b;">
+            <h4>{{ order.name }}</h4>
+            <p><strong>Price to Pay:</strong> {{ order.resale_price }} BDT</p>
+            <p><strong>Status:</strong> <span style="color: #d32f2f; font-weight: bold;">{{ order.status|upper }}</span></p>
+            <p><small>Reserved on: {{ order.ordered_at|date:"M d, Y" }}</small></p>
+            <a href="{% url 'corner_map' %}" style="font-size: 0.8em;">View Pickup Map</a>
+        </div>
+    {% empty %}
+        <p>You haven't ordered any medicine yet.</p>
+    {% endfor %}
+</div>
+
+<hr>
+
+<h3>My Donations</h3>
+<div class="donation-section">
+    {% for donation in donations %}
+        <div class="card">
+            <h4>{{ donation.name }}</h4>
+            <p>Status: {{ donation.status|title }}</p>
+        </div>
+    {% empty %}
+        <p>No donations found. <a href="{% url 'donate_medicine' %}">Donate now</a></p>
+    {% endfor %}
+</div>
 {% endblock %}

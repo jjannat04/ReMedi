@@ -102,20 +102,25 @@ def donate_medicine(request):
 
 @login_required
 def profile_view(request):
-    # Fetch donations made by the current user
+    # Meds the user donated
     my_donations = Medicine.objects.filter(donor=request.user).order_by('-id')
-    return render(request, 'myapp/profile.html', {'donations': my_donations})
-
-
+    
+    # Meds the user ordered/purchased
+    # We filter by patient=request.user
+    my_orders = Medicine.objects.filter(patient=request.user).order_by('-ordered_at')
+    
+    return render(request, 'myapp/profile.html', {
+        'donations': my_donations,
+        'orders': my_orders
+    })
 
 @login_required
 def order_medicine(request, med_id):
-    medicine = Medicine.objects.get(id=med_id)
+    medicine = get_object_or_404(Medicine, id=med_id)
     
-    # Logic: Only 'verified' meds can be ordered, and only if not already sold
     if medicine.status == 'verified' and medicine.patient is None:
         medicine.patient = request.user
-        medicine.status = 'sold' # Or 'reserved'
+        medicine.status = 'sold'  # Force the status change here
         medicine.ordered_at = timezone.now()
         medicine.save()
         return render(request, 'myapp/success.html', {'medicine': medicine})

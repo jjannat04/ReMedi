@@ -20,6 +20,7 @@ class Medicine(models.Model):
         ('pending', 'Pending Review'),
         ('verified', 'Verified & Available'),
         ('rejected', 'Rejected'),
+        ('sold', 'Sold'),
     ]
 
     # Change User to 'myapp.User' to point to your custom model
