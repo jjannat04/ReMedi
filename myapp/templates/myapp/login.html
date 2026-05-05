@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: auto; margin-top: 50px;">
+    <h2 style="text-align: center;">ReMedi Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn" style="width: 100%; border: none;">Login</button>
+    </form>
+    <p style="text-align: center; margin-top: 15px;">
+        Don't have an account? <a href="{% url 'signup' %}">Sign up here</a>
+    </p>
+</div>
+{% endblock %}

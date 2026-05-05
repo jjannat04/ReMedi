@@ -5,17 +5,48 @@
     <title>ReMedi | Circular Healthcare</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; line-height: 1.6; }
-        nav { background: #00796b; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        nav { background: #00796b; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; }
         nav a { color: white; margin-right: 20px; text-decoration: none; font-weight: bold; }
         .card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 2px 2px 5px #f0f0f0; }
         .discount { color: #d32f2f; font-weight: bold; }
-        .btn { background: #00796b; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; }
+        .btn { background: #00796b; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; display: inline-block; border: none; cursor: pointer; }
+        
+        /* Style for the logout button to look like a nav link */
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #ffab91;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: inherit;
+            padding: 0;
+            margin-left: 20px;
+        }
+        .logout-btn:hover { text-decoration: underline; }
+        .user-welcome { color: white; margin-left: auto; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <nav>
         <a href="{% url 'marketplace' %}">Marketplace</a>
-        <a href="{% url 'verification_queue' %}">Pharmacist Dashboard</a>
+        
+        {% if user.is_authenticated %}
+            {% if user.role == "PHARMACIST" or user.is_staff %}
+                <a href="{% url 'verification_queue' %}">Pharmacist Dashboard</a>
+            {% endif %}
+            
+            <span class="user-welcome">Welcome, <strong>{{ user.username }}</strong> ({{ user.role }})</span>
+            
+            <!-- POST Method Logout Form -->
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        {% endif %}
     </nav>
     
     {% block content %}
