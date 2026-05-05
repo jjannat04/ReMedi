@@ -15,7 +15,7 @@ ReMedi is a Django-based web application designed to bridge the gap between phar
 - **Frontend:** Django Templates & CSS
 
 ##  Installation
-1. Clone the repo: `git clone <your-repo-link>`
+1. Clone the repo: `git clone https://github.com/jjannat04/ReMedi.git`
 2. Create venv: `python -m venv .venv`
 3. Activate venv: `.venv\Scripts\activate`
 4. Install Django: `pip install django`
