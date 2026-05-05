@@ -30,6 +30,7 @@
 <body>
     <nav>
         <a href="{% url 'marketplace' %}">Marketplace</a>
+        <a href="{% url 'donate_medicine' %}">Donate Meds</a>
         <a href="{% url 'corner_map' %}">Find a Corner</a>
         
         {% if user.is_authenticated %}
@@ -37,8 +38,8 @@
                 <a href="{% url 'verification_queue' %}">Pharmacist Dashboard</a>
             {% endif %}
             
-            <span class="user-welcome">Welcome, <strong>{{ user.username }}</strong> ({{ user.role }})</span>
-            
+            <span class="user-welcome">Welcome, </span>
+            <a href="{% url 'profile' %}">{{ user.username }}</a>
             <!-- POST Method Logout Form -->
             <form action="{% url 'logout' %}" method="post" style="display: inline;">
                 {% csrf_token %}
