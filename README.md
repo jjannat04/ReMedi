@@ -8,8 +8,10 @@ A socially impactful web platform that enables the **safe redistribution of surp
 
 ## 📸 Preview
 
-> _Add a screenshot of your homepage or donor/patient dashboard here._
-> `![App Screenshot](./screenshots/home.png)`
+> ![App Screenshot](./screenshots/home.png)
+> ![App Screenshot](./screenshots/home2.png)
+> ![App Screenshot](./screenshots/home3.png)
+> ![App Screenshot](./screenshots/home4.png)
 
 ---
 
